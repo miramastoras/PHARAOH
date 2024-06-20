@@ -22,4 +22,6 @@ PHARAOH is a pipeline used for correcting the phasing of HiFi reads aligned to a
 
 ### Running PHARAOH
 
-PHARAOH is implemented as a wdl workflow.
+Currently PHARAOH is implemented as a wdl workflow. A WDL file can be run locally using Cromwell, which is an open-source Workflow Management System for bioinformatics. The latest releases of Cromwell are available [here](https://github.com/broadinstitute/cromwell/releases) and the documentation is available [here](https://cromwell.readthedocs.io/en/stable/CommandLine/).
+
+The wdl to use for PHARAOH is located under [wdl/workflows/PHARAOH.wdl]().
