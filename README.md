@@ -3,7 +3,7 @@
 
 ### Overview
 
-PHARAOH is a pipeline used for correcting the phasing of HiFi reads aligned to a diploid assembly. PHARAOH uses ONT UL reads to phase HiFi reads in regions where the diploid assembly is falsely homozygous for stretches longer than the length of the HiFi reads. For the rest of the genome, PHARAOH uses secondary alignments to re-assign reads to the correct haplotype, as implemented in [secphase](https://github.com/mobinasri/secphase). PHARAOH was developed to provide highly accurate read phasing to the [DeepPolisher model](https://github.com/google/deeppolisher) for polishing the HPRC samples.
+PHARAOH is a pipeline used for correcting the phasing of HiFi reads aligned to a diploid assembly. PHARAOH uses ONT UL reads to phase the HiFi reads in regions where the diploid assembly is falsely homozygous for stretches longer than the length of the HiFi reads. For the rest of the genome, PHARAOH uses secondary alignments to re-assign reads to the correct haplotype, as implemented in [secphase](https://github.com/mobinasri/secphase). PHARAOH was developed to provide highly accurate read phasing to the [DeepPolisher model](https://github.com/google/deeppolisher) for polishing the HPRC samples.
 
 ![pharaoh](images/PHARAOH.png)
 
@@ -19,8 +19,9 @@ PHARAOH is a pipeline used for correcting the phasing of HiFi reads aligned to a
 
 ![pharaoh](images/PHARAOH_overview.png)
 
-### Generating inputs to PHARAOH
+### Generating alignment inputs to PHARAOH
 
+PHARAOH requires three different alignments to be run. First, we need an initial alignment of all the HiFi reads to the diploid assembly, with either minimap2 or winnowmap. 
 
 
 ### Running PHARAOH
@@ -37,7 +38,7 @@ java -jar cromwell-85.jar run \
     -m outputs.json
 ```
 
-All required parameters must be supplied to inputs.json file. You may use womtool to generate an example inputs.json file, and pass in your files.
+All required parameters must be supplied to inputs.json file. You may use womtool to generate an example inputs.json file, and pass in your files. Please also review the disk, memory, and thread defaults to ensure they are appropriate for your mahcine. These can be set in the inputs.json file as well.
 ```
 wget https://github.com/broadinstitute/cromwell/releases/download/85/womtool-85.jar
 womtool-85.jar womtool-85.jar wdl/workflows/PHARAOH.wdl > inputs.json
@@ -80,10 +81,10 @@ Detailed description of these parameters for PHARAOH.wdl:
 |PHARAOH.Hap1FastaIndex| .fai index file for Hap1Fasta. Use [samtools faidx](https://www.htslib.org/doc/samtools-faidx.html) to generate |
 |PHARAOH.Hap2Fasta|.fasta file containing haplotype 2|
 |PHARAOH.Hap2FastaIndex|.fai index file for Hap2Fasta. Use [samtools faidx](https://www.htslib.org/doc/samtools-faidx.html) to generate |
-|PHARAOH.PharaohAligner| Either "minimap2" or "winnowmap" |
+|PHARAOH.PharaohAligner| Aligner to use for aligning reads to assemblies. Either "minimap2" or "winnowmap" |
 |PHARAOH.PharaohHiFiPreset| For PharaohAligner="minimap2" use preset "map-hifi" and for PharaohAligner="winnowmap" use preset "map-pb"|
 |PHARAOH.diploidFaGz| diploid assembly fasta file. Needs to be gzipped. |
-|PHARAOH.pafAligner| Either "minimap2" or "winnowmap" |
+|PHARAOH.pafAligner| Aligner to use for aligning the Hap1 fasta to the Hap2 fasta. Either "minimap2" or "winnowmap" |
 |PHARAOH.PharaohKmerSize| For PharaohAligner="minimap2" use preset "map-hifi" and for PharaohAligner="winnowmap" use preset "map-pb"|
 |PHARAOH.useMargin| Boolean. True means use Margin for phasing variants in homozygous regions with the UL alignments, False means use WhatsHap. WhatsHap is the default and currently reccommended.|
 |PHARAOH.sampleName| name of sample being run|
