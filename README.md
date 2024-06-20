@@ -22,4 +22,4 @@ PHARAOH is a pipeline used for correcting the phasing of HiFi reads aligned to a
 
 ### Running PHARAOH
 
-PHARAOH is implemented as a wdl workflow. 
+PHARAOH is implemented as a wdl workflow.
