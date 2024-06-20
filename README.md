@@ -1,4 +1,4 @@
-# PHARAOH - **PHA**sing **R**eads in **A**reas **O**f **H**omozygosity
+# PHARAOH - <ins>PHA</ins>sing <ins>R</ins>eads in <ins>A</ins>reas <ins>O</ins>f <ins>H</ins>omozygosity
 
 
 ### Overview
@@ -21,7 +21,7 @@ PHARAOH is a pipeline used for correcting the phasing of HiFi reads aligned to a
 
 ### Generating alignment inputs to PHARAOH
 
-PHARAOH requires three different alignments to be run. First, we need an initial alignment of all the HiFi reads to the diploid assembly, with either minimap2 or winnowmap. 
+PHARAOH requires three different alignments to be run. First, we need an initial alignment of all the HiFi reads to the diploid assembly, with either minimap2 or winnowmap.
 
 
 ### Running PHARAOH
