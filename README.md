@@ -21,7 +21,9 @@ PHARAOH is a pipeline used for correcting the phasing of HiFi reads aligned to a
 
 ### Generating alignment inputs to PHARAOH
 
-PHARAOH requires three different alignments to be run. First, we need an initial alignment of all the HiFi reads to the diploid assembly, with either minimap2 or winnowmap.
+PHARAOH requires three different alignments to be run. First, we need an initial alignment of all the HiFi reads to the diploid assembly, with either minimap2 or winnowmap. The reccommended parameters for this alignment are `--cs --eqx -L -Y -I8g`
+
+Next, we need an alignment of all ONT reads to the maternal assembly / haplotype 1, and all ONT reads to the paternal assembly / haplotype 2. The reccommended parameters for these alignments are `--cs --eqx -L -Y`.
 
 
 ### Running PHARAOH
