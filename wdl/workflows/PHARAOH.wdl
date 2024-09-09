@@ -13,6 +13,8 @@ import "../tasks/long_read_aligner_scattered_PhaseHom.wdl" as long_read_aligner_
 import "../tasks/secphase.wdl" as secphase_t
 import "../tasks/concatVcf.wdl" as concatVcf_t
 import "../tasks/get_mapq_table.wdl" as get_mapq_t
+import "../tasks/filter_short_reads.wdl" as filter_short_reads_t
+import "../tasks/parse_fastas.wdl" as parse_fastas_t
 
 
 workflow PHARAOH{
@@ -23,11 +25,7 @@ workflow PHARAOH{
     }
     input {
         File Hap1Fasta
-        File Hap1FastaIndex
         File Hap2Fasta
-        File Hap2FastaIndex
-
-        File diploidFaGz
 
         File allHifiToDiploidBam
         File allHifiToDiploidBai
@@ -57,6 +55,62 @@ workflow PHARAOH{
         String minWindowSizeBp=20000
         String extendBp=50000
         String hifiAlignmentOptions="--cs --eqx -Y -L"
+    }
+
+    ## parse input fasta files to obtain necessary files
+    call parse_fastas_t.parseFastas as parseFastaStep {
+        input:
+            hap1Fasta=Hap1RawFasta,
+            hap2Fasta=Hap2RawFasta,
+            sampleName=sampleName
+    }
+    call filter_short_reads_t.FilterShortReads as extractONTUL100kb {
+        input:
+          readFiles=ONTReads,
+          minReadLength=100000
+    }
+
+    ## Align all hifi reads to diploid assembly
+
+    call long_read_aligner_scattered_t.longReadAlignmentScattered as alignHifiToDiploid {
+        input:
+          assembly=parseFastaStep.dipRawFastaGz,
+          readFiles=HiFiReadsForAligner,
+          aligner=hifiAlignerToUse,
+          preset=alignerHiFiPreset,
+          kmerSize=alignerHiFiKmerSize,
+          sampleName=sampleName,
+          options="--cs --eqx -L -Y -I8g",
+          dockerImage="mobinasri/long_read_aligner:v0.3.3",
+          sampleSuffix="hifi.to.diploid.asm"
+    }
+
+    ## Align all ONT UL reads to Hap1 haplotype
+    call long_read_aligner_scattered_t.longReadAlignmentScattered as alignONTToHap1 {
+        input:
+          assembly=parseFastaStep.hap1RawFasta,
+          readFiles=extractONTUL100kb.longReadFastqGzArray,
+          aligner=ONTAlignerToUse,
+          preset=alignerONTPreset,
+          kmerSize=alignerONTKmerSize,
+          sampleName=sampleName,
+          options="--cs --eqx -L -Y",
+          dockerImage="mobinasri/long_read_aligner:v0.3.3",
+          sampleSuffix="ONT.to.Hap1.asm"
+    }
+
+    ## Align all ONT UL reads to Hap2 haplotype
+    call long_read_aligner_scattered_t.longReadAlignmentScattered as alignONTToHap2 {
+        input:
+          assembly=parseFastaStep.hap2RawFasta,
+          readFiles=extractONTUL100kb.longReadFastqGzArray,
+          aligner=ONTAlignerToUse,
+          preset=alignerONTPreset,
+          kmerSize=alignerONTKmerSize,
+          sampleName=sampleName,
+          options="--cs --eqx -L -Y",
+          dockerImage="mobinasri/long_read_aligner:v0.3.3",
+          sampleSuffix="ONT.to.Hap2.asm"
     }
 
     ## Align Hap2 to Hap1 assembly
