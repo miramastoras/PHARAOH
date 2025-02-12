@@ -43,7 +43,7 @@ java -jar cromwell-85.jar run \
 All required parameters must be supplied to inputs.json file. You may use womtool to generate an example inputs.json file, and pass in your files. Please also review the disk, memory, and thread defaults to ensure they are appropriate for your mahcine. These can be set in the inputs.json file as well.
 ```
 wget https://github.com/broadinstitute/cromwell/releases/download/85/womtool-85.jar
-womtool-85.jar womtool-85.jar wdl/workflows/PHARAOH.wdl > inputs.json
+womtool-85.jar inputs wdl/workflows/PHARAOH.wdl > inputs.json
 ```
 
 Below are the reccommended parameters to review for your inputs.json file:
